@@ -11,19 +11,14 @@ from langchain.vectorstores import FAISS
 from PyPDF2 import PdfReader
 
 # TODO:
-# * Add a preview of the PDF
 # * Add the ability to select a PDF from a list of PDFs that have already been uploaded
-#
-
-
-# template = "You are a helpful assistant that allows the user to interact with PDFs, you make use of relevant information"
 load_dotenv()
 
-st.title("PDF Chatter")
+st.title("General Question Answering")
 
 st.markdown(
     """
-    This page lets me chat with an uploaded PDF, ideally the course-notes of a course. It works by embedding all text and storing it inside a vectorstore. Once that has been done, it will be forever saved and you can simply select it again.
+    This page lets me chat with an uploaded PDF, ideally the course-notes of a course. It works by embedding all text and storing it inside a vectorstore. Once that has been done, it will be forever saved and you can simply select it again. This page should only be used for non-math and non-cs related subjects as there are/will be separate ones more tailored to math and coding help.
     """
 )
 
@@ -57,11 +52,14 @@ if pdf is not None:
     if question:
         docs = knowledge_base.similarity_search(query=question)
 
-        llm = OpenAI()
+        llm = OpenAI(temperature=0, model_name="gpt-4")
         chain = load_qa_chain(llm=llm, chain_type="stuff")
 
         with get_openai_callback() as cb:
             response = chain.run(input_documents=docs, question=question)
-            st.write(f"The cost of this query was {cb}")
+            st.markdown("---")
+            st.write(cb)
+            st.markdown("---")
 
+        st.markdown("## Response:")
         st.write(response)
