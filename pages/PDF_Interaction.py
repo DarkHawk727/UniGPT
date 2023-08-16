@@ -1,19 +1,20 @@
-import numpy as np
 import streamlit as st
-from langchain.chains import ConversationalRetrievalChain
-from langchain.document_loaders import PyPDFLoader
-from langchain.embeddings import OpenAIEmbeddings
+from dotenv import load_dotenv
+from langchain.callbacks import get_openai_callback
+from langchain.chains.question_answering import load_qa_chain
+from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.llms import OpenAI
-from langchain.memory import ConversationBufferMemory
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import FAISS
+from PyPDF2 import PdfReader
 
 # Check if the PDF has already been uploaded to the vectorstore.
 # If it has, then query from that.
 # If it hasn't, then upload it to the vectorstore and then query from that.
 
 
-template = "You are a helpful assistant that allows the user to interact with PDFs, you make use of relevant information"
+# template = "You are a helpful assistant that allows the user to interact with PDFs, you make use of relevant information"
+load_dotenv()
 
 st.title("PDF Chatter")
 
@@ -30,26 +31,30 @@ pdf = st.file_uploader(
 )
 
 if pdf is not None:
-    pages = PyPDFLoader(pdf.getvalue()).load_and_split()
-    sections = RecursiveCharacterTextSplitter(
-        chunk_size=1000, chunk_overlap=100, length_function=len
-    ).split_documents(pages)
+    pdf_reader = PdfReader(pdf)
+    text = "".join([page.extract_text() for page in pdf_reader.pages])
 
-    faiss_index = FAISS.from_documents(sections, OpenAIEmbeddings())
-
-    retriever = faiss_index.as_retriever()
-
-    memory = ConversationBufferMemory(
-        memory_key="chat_history", return_messages=True, output_key="answer"
+    text_splitter = CharacterTextSplitter(
+        separator=".",
+        chunk_size=1000,
+        chunk_overlap=100,
+        length_function=len,
     )
 
-    chain = ConversationalRetrievalChain.from_llm(
-        llm=OpenAI(), retriever=retriever, memory=memory
-    )
+    chunks = text_splitter.split_text(text)
 
-st.markdown("---")
+    embeddings = OpenAIEmbeddings()
+    knowledge_base = FAISS.from_texts(texts=chunks, embedding=embeddings)
 
+    question = st.text_input("What would you like help with?")
+    if question:
+        docs = knowledge_base.similarity_search(query=question)
 
-message = st.chat_message("Assistant")
-message.write("Hello human")
-message.bar_chart(np.random.randn(30, 3))
+        llm = OpenAI()
+        chain = load_qa_chain(llm=llm, chain_type="stuff")
+
+        with get_openai_callback() as cb:
+            response = chain.run(input_documents=docs, question=question)
+            st.write(f"The cost of this query was {cb}")
+
+        st.write(response)
