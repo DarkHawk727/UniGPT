@@ -1,3 +1,5 @@
+import base64
+
 import streamlit as st
 from dotenv import load_dotenv
 from langchain.callbacks import get_openai_callback
@@ -8,9 +10,10 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import FAISS
 from PyPDF2 import PdfReader
 
-# Check if the PDF has already been uploaded to the vectorstore.
-# If it has, then query from that.
-# If it hasn't, then upload it to the vectorstore and then query from that.
+# TODO:
+# * Add a preview of the PDF
+# * Add the ability to select a PDF from a list of PDFs that have already been uploaded
+#
 
 
 # template = "You are a helpful assistant that allows the user to interact with PDFs, you make use of relevant information"
@@ -31,6 +34,10 @@ pdf = st.file_uploader(
 )
 
 if pdf is not None:
+    base64_pdf = base64.b64encode(pdf.read()).decode("utf-8")
+    pdf_display = f'<embed src="data:application/pdf;base64,{base64_pdf}" width="700" height="1000" type="application/pdf">'
+    st.markdown(pdf_display, unsafe_allow_html=True)
+
     pdf_reader = PdfReader(pdf)
     text = "".join([page.extract_text() for page in pdf_reader.pages])
 
