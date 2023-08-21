@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 
-st.title("Lecture Summarizer")
+st.title("Lecture Summarizer 🧑‍🏫")
 
 st.markdown(
     """
@@ -16,7 +16,7 @@ st.file_uploader(
     accept_multiple_files=True,
 )
 
-st.markdown("---")
+st.divider()
 st.markdown(body="## Summarized Notes")
 
 st.button(label="Download PDF")

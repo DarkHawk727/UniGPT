@@ -15,10 +15,11 @@ def main() -> None:
     * **Intelligent Search**: Enhance the intelligent search feature to incorporate natural language understanding capabilities. The platform can analyze your search queries in context and provide more accurate and tailored search results, including relevant articles, research papers, forum discussions, and even suggestions for related concepts.
     * **Text Summarization**: Summarizes documents.
     * **Practice Problem Generator**: Generates practice problems from provided documents of textbooks, assignments, or even topics. Will also provide solutions.
+    * **Flashcard Generation**: Generates a `.csv` containing Anki flashcards from a given text or document.
     """
     )
 
-    st.markdown("---")
+    st.divider()
 
 
 if __name__ == "__main__":

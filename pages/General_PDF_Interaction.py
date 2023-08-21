@@ -1,5 +1,6 @@
 import base64
 
+import chromadb
 import streamlit as st
 from dotenv import load_dotenv
 from langchain.callbacks import get_openai_callback
@@ -57,9 +58,9 @@ if pdf is not None:
 
         with get_openai_callback() as cb:
             response = chain.run(input_documents=docs, question=question)
-            st.markdown("---")
+            st.divider()
             st.write(cb)
-            st.markdown("---")
+            st.divider()
 
         st.markdown("## Response:")
         st.write(response)

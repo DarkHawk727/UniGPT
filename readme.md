@@ -1,6 +1,6 @@
 # Personal AI
 
-This is a collection of LLM-powered tools that I have developed for personal use. 
+This is a collection of LLM-powered tools that I have developed for personal use.
 
 * **PDF Interaction**: This is primarily used for homework/assignment help. It works by embedding a PDF to a vectorstore and querying it and then adding that to a custom prompt to a model of choice depending on the question.
 * **Study Sheet Generation**: This feature lets me create studysheets from all the definitions, theorems, corollaries as well as problem-solving flowcharts.

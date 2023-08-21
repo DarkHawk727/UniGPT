@@ -1,5 +1,5 @@
 import streamlit as st
-from langchain.document_loaders import PyPDFLoader, DocxLoader
+from langchain.document_loaders import DocxLoader, PyPDFLoader
 
 st.title("Assignment Critique")
 
@@ -33,7 +33,7 @@ else:
         accept_multiple_files=True,
     )
 
-st.markdown("---")
+st.divider()
 st.subheader("Feedback:")
 
 if additional_docs == "Enter Text":
@@ -65,3 +65,6 @@ Student Solution:
 Student Self-Assessment:
 {student_self_assessment}
 """
+
+with st.expander("See Prompt"):
+    st.text(body=prompt)
