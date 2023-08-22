@@ -1,3 +1,3 @@
 import streamlit as st
 
-st.title("PDF Chatter")
+st.title("Study Sheet Maker")

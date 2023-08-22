@@ -3,10 +3,12 @@ import base64
 import streamlit as st
 from dotenv import load_dotenv
 from langchain.callbacks import get_openai_callback
-from langchain.document_loaders.parsers.audio import OpenAIWhisperParser
+from langchain.chat_models import ChatOpenAI
 from langchain.llms import OpenAI
 from langchain.text_splitter import CharacterTextSplitter
 from PyPDF2 import PdfReader
+
+load_dotenv()
 
 st.title("Flashcard Maker 🗃️")
 st.markdown(
@@ -77,14 +79,26 @@ st.write(text)
 st.subheader(body="Output")
 
 # TODO: Make this work using langchain lmao.
+llm = OpenAI(temperature=0, model_name="gpt-4")
+
+
 flashcards = ""
 
+if subject_name:
+    st.download_button(
+        label=f"Download Flashcards for {subject_name}",
+        data=flashcards,
+        file_name=f"{subject_name}.csv",
+        disabled=False,
+    )
+else:
+    st.download_button(
+        label=f"Download Flashcards for {subject_name}",
+        data=flashcards,
+        file_name=f"{subject_name}.csv",
+        disabled=True,
+    )
 
-st.download_button(
-    label=f"Download Flashcards for {subject_name}",
-    data=flashcards,
-    file_name=f"{subject_name}.csv",
-)
 
 st.divider()
 with st.expander(label="See Prompt"):
