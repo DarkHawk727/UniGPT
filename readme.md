@@ -12,9 +12,4 @@ This is a collection of LLM-powered tools that I have developed for personal use
 
 ## Current Issues
 
-* `FlashCards.py`: Currently does not incorporate the input text and instead generates more from just the prompt.
 * `General_PDF_interaction.py`: Does not have a selector for previously uploaded documents using chromadb.
-
-## Sources
-
-* https://github.com/oresttokovenko/gpt-anki/blob/main/src/generate_deck.py for the flascards

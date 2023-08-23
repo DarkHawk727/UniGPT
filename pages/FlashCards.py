@@ -7,12 +7,18 @@ from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
 from langchain.output_parsers import PydanticOutputParser
 from langchain.prompts import ChatPromptTemplate
+from langchain.prompts.chat import HumanMessagePromptTemplate, SystemMessage
 from pydantic import BaseModel, Field
 from PyPDF2 import PdfReader
 
 load_dotenv()
 
-prompt = """
+
+template = ChatPromptTemplate.from_messages(
+    [
+        SystemMessage(
+            content=(
+                """
 Task: Your task is to synthesize mathematical and computer science related definitions, theorems, and corollaries from the given text and condense the information into concise and direct statements using Anki flashcards. Ensure that each statement is clearly written, easily understandable, and adheres to the specified formatting and reference criteria. 
 
 Formatting Criteria: 
@@ -32,10 +38,13 @@ Example:
 Question, Answer 
 What is the time complexity of Binary Search, Logarithmic.
 What does every finite-dimensional inner product space admit?, An Orthogonal Basis.
-
-Given Text:
-{given_text}
 """
+            )
+        ),
+        HumanMessagePromptTemplate.from_template("{text}"),
+    ]
+)
+
 
 st.title("Flashcard Maker 🗃️")
 st.markdown(
@@ -73,9 +82,7 @@ st.divider()
 
 if subject_name and text:
     llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.0)
-    prompt = ChatPromptTemplate.from_template(template=prompt)
-    messages = prompt.format_messages(given_text=text)
-    output = llm(messages)
+    output = llm(template.format_messages(text=text))
     df = pd.DataFrame([row.split("?,") for row in output.content.split("\n")])
     st.write(df)
     st.download_button(
@@ -93,4 +100,26 @@ else:
 
 st.divider()
 with st.expander(label="See Prompt"):
-    st.text(body=prompt)
+    st.text(
+        body="""
+Task: Your task is to synthesize mathematical and computer science related definitions, theorems, and corollaries from the given text and condense the information into concise and direct statements using Anki flashcards. Ensure that each statement is clearly written, easily understandable, and adheres to the specified formatting and reference criteria. 
+
+Formatting Criteria: 
+- Construct a table with two columns: "Question" and "Answer" delimited by a comma.
+- Each entry in the "Question" column should be a question from the given text focusing on definitions, theorems, and algorithms. Make sure to provide any context that might help answering the question.
+- The question column should contain the answer to the preceding question.
+- Any math should be enclosed by \(\) and be formatted with LaTeX, do not include math inside cloze deletions.
+
+Reference Criteria for each "Flashcard":
+- The answer should not exceed 1 sentence.
+- Each question-answer pair must be able to stand alone. Include the subject of the question somewhere in the text.
+- Keep ONLY simple, direct, cloze deletion statements in the "Question" column.
+- End each question-answer pair with a newline
+
+
+Example: 
+Question, Answer 
+What is the time complexity of Binary Search, Logarithmic.
+What does every finite-dimensional inner product space admit?, An Orthogonal Basis.
+"""
+    )
