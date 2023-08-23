@@ -2,8 +2,7 @@
 
 This is a collection of LLM-powered tools that I have developed for personal use.
 
-* **PDF Interaction**: This is primarily used for homework/assignment help. It works by embedding a PDF to a vectorstore and querying it and then adding that to a custom prompt to a model of choice depending on the question.
-* **Study Sheet Generation**: This feature lets me create studysheets from all the definitions, theorems, corollaries as well as problem-solving flowcharts.
+* **PDF Interaction**: This is primarily used for homework/assignment help. It works by embedding a PDF to a vectorstore and querying it and then adding that to a custom prompt to a model of choice depending on the question. I can also ask the LLM to compile all the theorems, definitions, and corollaries.
 * **Note Transcriber**: Uploading an audio file and using the `whisper` api to transcribe the notes and use another model to convert it to markdown.
 * **Assignment Critiques**: Upload a piece of writing/math/code and have a model offer feedback, can also add an optional assignment description/rubric.
 * **Intelligent Search**: Enhance the intelligent search feature to incorporate natural language understanding capabilities. The platform can analyze your search queries in context and provide more accurate and tailored search results, including relevant articles, research papers, forum discussions, and even suggestions for related concepts.

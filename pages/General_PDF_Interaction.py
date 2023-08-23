@@ -62,5 +62,5 @@ if pdf is not None:
             st.write(cb)
             st.divider()
 
-        st.markdown("## Response:")
+        st.subheader("Response:")
         st.write(response)

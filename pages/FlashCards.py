@@ -13,8 +13,6 @@ from PyPDF2 import PdfReader
 load_dotenv()
 
 prompt = """
-Review Text: "Source text"
-
 Task: Your task is to synthesize mathematical and computer science related definitions, theorems, and corollaries from the given text and condense the information into concise and direct statements using Anki flashcards. Ensure that each statement is clearly written, easily understandable, and adheres to the specified formatting and reference criteria. 
 
 Formatting Criteria: 
@@ -34,6 +32,9 @@ Example:
 Question, Answer 
 What is the time complexity of Binary Search, Logarithmic.
 What does every finite-dimensional inner product space admit?, An Orthogonal Basis.
+
+Given Text:
+{given_text}
 """
 
 st.title("Flashcard Maker 🗃️")
@@ -73,7 +74,7 @@ st.divider()
 if subject_name and text:
     llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.0)
     prompt = ChatPromptTemplate.from_template(template=prompt)
-    messages = prompt.format_messages(input_text=text)
+    messages = prompt.format_messages(given_text=text)
     output = llm(messages)
     df = pd.DataFrame([row.split("?,") for row in output.content.split("\n")])
     st.write(df)
